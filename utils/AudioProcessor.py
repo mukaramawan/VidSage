@@ -34,4 +34,18 @@ def convert_to_wav(input_path: str) -> str:
     audio.export(output_path, format="wav")
     return output_path
 
-print(convert_to_wav(download_youtube_audio("https://www.youtube.com/watch?v=JPcx9qHzzgk")))
+final_audio = convert_to_wav(download_youtube_audio("https://www.youtube.com/watch?v=JPcx9qHzzgk"))
+
+
+def audio_chunks(input_path: str, chunk: int = 5) -> list:
+    audio = AudioSegment.from_wav(input_path)
+    duration_ms = chunk * 60 * 1000
+    chunks = []
+    for i, start in enumerate(range(0, len(audio), duration_ms)):
+        chunk_audio = audio[start: start + duration_ms]
+        chunk_path = f"{input_path}_chunk_{i}.wav"
+        chunk_audio.export(chunk_path, format="wav")
+        chunks.append(chunk_path)
+    return chunks
+
+print(audio_chunks(final_audio))
